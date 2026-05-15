@@ -11,19 +11,29 @@ import orderRouter from './routes/orderRoute.js'
 //App config
 const app = express()
 const port = process.env.PORT || 4000
-connectDB();
-connectCloudinary();
-// middlewares
-app.use(express.json())
-app.use(cors())
 
-// api endpoints
-app.use('/api/user', userRouter);
-app.use('/api/product', productRouter);
-app.use('/api/cart', cartRouter);
-app.use('/api/order', orderRouter);
-app.get('/', (req, res) => {
-    res.send("API working")
+const startServer = async () => {
+    await connectDB()
+    connectCloudinary()
+
+    // middlewares
+    app.use(express.json())
+    app.use(cors())
+
+    // api endpoints
+    app.use('/api/user', userRouter);
+    app.use('/api/product', productRouter);
+    app.use('/api/cart', cartRouter);
+    app.use('/api/order', orderRouter);
+    app.get('/', (req, res) => {
+        res.send('API working')
+    })
+
+    app.listen(port, () => console.log('Server started on port: ' + port))
+}
+
+startServer().catch(err => {
+    console.error('Failed to start server:', err.message || err)
+    console.error(err)
+    process.exit(1)
 })
-
-app.listen(port, ()=> console.log('Server started on port: ' + port));
